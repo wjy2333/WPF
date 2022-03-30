@@ -964,6 +964,35 @@ namespace System.Windows.Controls
         /// </summary>
         protected override void OnKeyDown(KeyEventArgs e)
         {
+            const ModifierKeys ModifierMask = ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Windows;
+            ModifierKeys modifierKeys = Keyboard.Modifiers & ModifierMask;
+
+            if ((modifierKeys == ModifierKeys.Alt) && (e.Key == Key.Left || e.Key == Key.Right))
+            {
+                DataGridLength updatedWidth = new DataGridLength();
+
+                if (e.Key == Key.Right)
+                {
+                    updatedWidth = new DataGridLength(Column.ActualWidth + _columnWidthStepSize);
+                }
+                else if (e.Key == Key.Left)
+                {
+                    updatedWidth = new DataGridLength(Column.ActualWidth - _columnWidthStepSize);
+                }
+
+                if(Column != null && Column.CanColumnResize(updatedWidth))
+                {
+                    Column.SetCurrentValueInternal(DataGridColumn.WidthProperty, updatedWidth);
+                    e.Handled = true;
+                }
+                else
+                {
+                    e.Handled = false;
+                }
+
+                return;
+            }
+
             SendInputToColumn(e);
         }
 

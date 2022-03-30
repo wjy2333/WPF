@@ -350,6 +350,36 @@ namespace System.Windows.Controls
                 case Key.Down:
                 case Key.Right:
                     {
+                        const ModifierKeys ModifierMask = ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Windows;
+                        ModifierKeys modifierKeys = Keyboard.Modifiers & ModifierMask;
+
+                        if ((modifierKeys == ModifierKeys.Alt) && (key == Key.Left || key == Key.Right))
+                        {
+                            if(e.OriginalSource is GridViewColumnHeader gridViewColumnHeader && gridViewColumnHeader.Column != null)
+                            {
+                                double width;
+                                if (key == Key.Left)
+                                {
+                                    width = gridViewColumnHeader.Column.ActualWidth - ColumnWidthStepSize;
+                                    if (width > 0)
+                                    {
+                                        gridViewColumnHeader.UpdateColumnHeaderWidth(width);
+                                    }                                    
+                                }
+                                else if (key == Key.Right)
+                                {
+                                    width = gridViewColumnHeader.Column.ActualWidth + ColumnWidthStepSize;
+                                    gridViewColumnHeader.UpdateColumnHeaderWidth(width);
+                                }
+                            }
+                            else
+                            {
+                                handled = false;
+                            }
+
+                            break;
+                        }
+                    
                         KeyboardNavigation.ShowFocusVisual();
 
                         // Depend on logical orientation we decide to move focus or just scroll

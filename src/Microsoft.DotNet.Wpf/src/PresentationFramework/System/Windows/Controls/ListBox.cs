@@ -350,36 +350,6 @@ namespace System.Windows.Controls
                 case Key.Down:
                 case Key.Right:
                     {
-                        const ModifierKeys ModifierMask = ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Windows;
-                        ModifierKeys modifierKeys = Keyboard.Modifiers & ModifierMask;
-
-                        if ((modifierKeys & ModifierKeys.Alt) == ModifierKeys.Alt && (key == Key.Left || key == Key.Right))
-                        {
-                            if(e.OriginalSource is GridViewColumnHeader gridViewColumnHeader && gridViewColumnHeader.Column != null)
-                            {
-                                double width;
-                                if (key == Key.Left)
-                                {
-                                    width = gridViewColumnHeader.Column.ActualWidth - ColumnWidthStepSize;
-                                    if (width > 0)
-                                    {
-                                        gridViewColumnHeader.UpdateColumnHeaderWidth(width);
-                                    }                                    
-                                }
-                                else if (key == Key.Right)
-                                {
-                                    width = gridViewColumnHeader.Column.ActualWidth + ColumnWidthStepSize;
-                                    gridViewColumnHeader.UpdateColumnHeaderWidth(width);
-                                }
-                            }
-                            else
-                            {
-                                handled = false;
-                            }
-
-                            break;
-                        }
-                    
                         KeyboardNavigation.ShowFocusVisual();
 
                         // Depend on logical orientation we decide to move focus or just scroll
@@ -519,6 +489,39 @@ namespace System.Windows.Controls
                     handled = false;
                     break;
             }
+
+            if(handled == false)
+            {
+                const ModifierKeys ModifierMask = ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Windows;
+                ModifierKeys modifierKeys = Keyboard.Modifiers & ModifierMask;
+
+                key = e.SystemKey;
+                if(((key == Key.Right) || (e.SystemKey == Key.Left)) && (modifierKeys == ModifierKeys.Alt))
+                {
+                    if(e.OriginalSource is GridViewColumnHeader gridViewColumnHeader && gridViewColumnHeader.Column != null)
+                    {
+                        double width;
+                        if (key == Key.Left)
+                        {
+                            width = gridViewColumnHeader.Column.ActualWidth - ColumnWidthStepSize;
+                            if (width > 0)
+                            {
+                                gridViewColumnHeader.UpdateColumnHeaderWidth(width);
+                            }                                    
+                        }
+                        else if (key == Key.Right)
+                        {
+                            width = gridViewColumnHeader.Column.ActualWidth + ColumnWidthStepSize;
+                            gridViewColumnHeader.UpdateColumnHeaderWidth(width);
+                        }
+                    }
+                    else
+                    {
+                        handled = false;
+                    }
+                }
+            }
+
             if (handled)
             {
                 e.Handled = true;
@@ -1042,6 +1045,7 @@ namespace System.Windows.Controls
 
         private DispatcherTimer _autoScrollTimer;
 
+        private const double ColumnWidthStepSize = 10d;
         private static RoutedUICommand SelectAllCommand =
             new RoutedUICommand(SR.Get(SRID.ListBoxSelectAllText), "SelectAll", typeof(ListBox));
 

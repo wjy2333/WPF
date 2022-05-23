@@ -963,35 +963,65 @@ namespace System.Windows.Controls
         ///     Reporting a key was pressed.
         /// </summary>
         protected override void OnKeyDown(KeyEventArgs e)
-        {
-            const ModifierKeys ModifierMask = ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Windows;
-            ModifierKeys modifierKeys = Keyboard.Modifiers & ModifierMask;
-
-            if ((modifierKeys & ModifierKeys.Alt) == ModifierKeys.Alt && (e.Key == Key.Left || e.Key == Key.Right))
+        {           
+            if (!e.Handled)
             {
-                DataGridLength updatedWidth = new DataGridLength();
+                const ModifierKeys ModifierMask = ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Windows;
+                ModifierKeys modifierKeys = Keyboard.Modifiers & ModifierMask;
 
-                if (e.Key == Key.Right)
+                Key key = e.SystemKey;
+                if(((key == Key.Right) || (e.SystemKey == Key.Left)) && (modifierKeys == ModifierKeys.Alt))
                 {
-                    updatedWidth = new DataGridLength(Column.ActualWidth + ColumnWidthStepSize);
-                }
-                else if (e.Key == Key.Left)
-                {
-                    updatedWidth = new DataGridLength(Column.ActualWidth - ColumnWidthStepSize);
-                }
+                    DataGridLength updatedWidth = new DataGridLength();
+                    if(key == Key.Right)
+                    {
+                        updatedWidth = new DataGridLength(Column.ActualWidth + ColumnWidthStepSize);
+                    }
+                    else if(key == Key.Left)
+                    {
+                        updatedWidth = new DataGridLength(Column.ActualWidth - ColumnWidthStepSize);
+                    }
 
-                if(Column != null && Column.CanColumnResize(updatedWidth))
-                {
-                    Column.SetCurrentValueInternal(DataGridColumn.WidthProperty, updatedWidth);
-                    e.Handled = true;
+                    if(Column != null && Column.CanColumnResize(updatedWidth))
+                    {
+                        Column.SetCurrentValueInternal(DataGridColumn.WidthProperty, updatedWidth);
+                        e.Handled = true;
+                    }
+                    else
+                    {
+                        e.Handled = false;
+                    }
+                    return ;
                 }
-                else
-                {
-                    e.Handled = false;
-                }
-
-                return;
             }
+
+            //if ((modifierKeys & ModifierKeys.Alt) == ModifierKeys.Alt
+            //    // && (e.Key == Key.Left || e.Key == Key.Right)
+            //    )
+            //{
+            //    DataGridLength updatedWidth = new DataGridLength();
+
+            //    if (e.Key == Key.Right)
+            //    {
+            //        updatedWidth = new DataGridLength(Column.ActualWidth + ColumnWidthStepSize);
+            //    }
+            //    else if (e.Key == Key.Left)
+            //    {
+            //        updatedWidth = new DataGridLength(Column.ActualWidth - ColumnWidthStepSize);
+            //    }
+
+            //    if(Column != null && Column.CanColumnResize(updatedWidth))
+            //    {
+            //        Column.SetCurrentValueInternal(DataGridColumn.WidthProperty, updatedWidth);
+            //        e.Handled = true;
+            //    }
+            //    else
+            //    {
+            //        e.Handled = false;
+            //    }
+
+            //    return;
+            //}
 
             SendInputToColumn(e);
         }
@@ -1129,7 +1159,7 @@ namespace System.Windows.Controls
         private DataGridRow _owner;
         private ContainerTracking<DataGridCell> _tracker;
         private bool _syncingIsSelected;                    // Used to prevent unnecessary notifications
-
+        private const double ColumnWidthStepSize = 10d;
         #endregion
     }
 }

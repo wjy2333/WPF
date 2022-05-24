@@ -350,23 +350,6 @@ namespace System.Windows.Controls
                 case Key.Down:
                 case Key.Right:
                     {
-                        if((Keyboard.Modifiers & ModifierKeys.Alt) == (ModifierKeys.Alt))
-                        {
-                            handled = true;
-                            break;
-                        }
-
-                        if ((Keyboard.Modifiers & ModifierKeys.Control) == (ModifierKeys.Control))
-                        {
-                            handled = true;
-                            break;
-                        }
-
-                        if ((Keyboard.Modifiers & ModifierKeys.Shift) == (ModifierKeys.Shift))
-                        {
-                            handled = true;
-                            break;
-                        }
                         KeyboardNavigation.ShowFocusVisual();
 
                         // Depend on logical orientation we decide to move focus or just scroll

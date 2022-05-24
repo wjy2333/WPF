@@ -969,27 +969,17 @@ namespace System.Windows.Controls
                 const ModifierKeys ModifierMask = ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Windows;
                 ModifierKeys modifierKeys = Keyboard.Modifiers & ModifierMask;
 
-                Key key = e.SystemKey;
-                if(((key == Key.Right) || (e.SystemKey == Key.Left)) && (modifierKeys == ModifierKeys.Alt))
+                if(((e.SystemKey == Key.Right) || (e.SystemKey == Key.Left)) && (modifierKeys == ModifierKeys.Alt))
                 {
-                    DataGridLength updatedWidth = new DataGridLength();
-                    if(key == Key.Right)
-                    {
-                        updatedWidth = new DataGridLength(Column.ActualWidth + ColumnWidthStepSize);
-                    }
-                    else if(key == Key.Left)
-                    {
-                        updatedWidth = new DataGridLength(Column.ActualWidth - ColumnWidthStepSize);
-                    }
+                    DataGridLength updatedWidth = new DataGridLength(Column.ActualWidth + ((e.SystemKey == Key.Right ? 1 : -1)*ColumnWidthStepSize));
 
-                    if(Column != null && Column.CanColumnResize(updatedWidth))
+                    if(Column != null)
                     {
-                        Column.SetCurrentValueInternal(DataGridColumn.WidthProperty, updatedWidth);
+                        if(Column.CanColumnResize(updatedWidth))
+                        {
+                            Column.SetCurrentValueInternal(DataGridColumn.WidthProperty, updatedWidth);
+                        }
                         e.Handled = true;
-                    }
-                    else
-                    {
-                        e.Handled = false;
                     }
                     return ;
                 }

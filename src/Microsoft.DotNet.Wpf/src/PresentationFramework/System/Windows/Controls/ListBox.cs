@@ -350,6 +350,23 @@ namespace System.Windows.Controls
                 case Key.Down:
                 case Key.Right:
                     {
+                        if((Keyboard.Modifiers & ModifierKeys.Alt) == (ModifierKeys.Alt))
+                        {
+                            handled = true;
+                            break;
+                        }
+
+                        if ((Keyboard.Modifiers & ModifierKeys.Control) == (ModifierKeys.Control))
+                        {
+                            handled = true;
+                            break;
+                        }
+
+                        if ((Keyboard.Modifiers & ModifierKeys.Shift) == (ModifierKeys.Shift))
+                        {
+                            handled = true;
+                            break;
+                        }
                         KeyboardNavigation.ShowFocusVisual();
 
                         // Depend on logical orientation we decide to move focus or just scroll
@@ -483,6 +500,60 @@ namespace System.Windows.Controls
 
                 case Key.PageDown:
                     NavigateByPage(FocusNavigationDirection.Down, new ItemNavigateArgs(e.Device, Keyboard.Modifiers));
+                    break;
+
+                case Key.System:
+                    
+                    Key skey = e.SystemKey;
+                    switch (skey)
+                    {
+                        case Key.Right:
+                        case Key.Left:
+                            const ModifierKeys ModifierMask = ModifierKeys.Alt | ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Windows;
+                            ModifierKeys modifierKeys = Keyboard.Modifiers & ModifierMask;
+                        
+                            if(modifierKeys == ModifierKeys.Alt)
+                            {
+                                if(e.OriginalSource is GridViewColumnHeader gridViewColumnHeader && gridViewColumnHeader.Column != null)
+                                {
+                                    double width = gridViewColumnHeader.Column.ActualWidth + ((skey == Key.Right ? 1 : -1)*ColumnWidthStepSize);
+                                    if (width > 0)
+                                    {
+                                        gridViewColumnHeader.UpdateColumnHeaderWidth(width);
+                                    }
+                                }                                
+                            }
+                            break;
+
+                        default:
+                            handled = false;
+                            break;
+                    }
+                    
+                    // if(((e.SystemKey == Key.Right) || (e.SystemKey == Key.Left)) && (modifierKeys & ModifierKeys.Alt))
+                    // {
+                    //     if(e.OriginalSource is GridViewColumnHeader gridViewColumnHeader && gridViewColumnHeader.Column != null)
+                    //     {
+                    //         double width;
+                    //         if (e.SystemKey == Key.Left)
+                    //         {
+                    //             width = gridViewColumnHeader.Column.ActualWidth - ColumnWidthStepSize;
+                    //             if (width > 0)
+                    //             {
+                    //                 gridViewColumnHeader.UpdateColumnHeaderWidth(width);
+                    //             }                                    
+                    //         }
+                    //         else if (e.SystemKey == Key.Right)
+                    //         {
+                    //             width = gridViewColumnHeader.Column.ActualWidth + ColumnWidthStepSize;
+                    //             gridViewColumnHeader.UpdateColumnHeaderWidth(width);
+                    //         }
+                    //     }
+                    //     else
+                    //     {
+                    //         handled = false;
+                    //     }
+                    // }
                     break;
 
                 default:

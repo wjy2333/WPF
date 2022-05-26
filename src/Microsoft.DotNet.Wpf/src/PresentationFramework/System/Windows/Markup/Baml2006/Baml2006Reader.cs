@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xaml;
+using System.Buffers;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Reflection;

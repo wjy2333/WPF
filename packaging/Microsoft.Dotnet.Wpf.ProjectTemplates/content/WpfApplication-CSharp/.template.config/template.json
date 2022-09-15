@@ -53,10 +53,15 @@
                 "choice": "net7.0",
                 "description": "Target net7.0",
                 "displayName": ".NET 7.0"
+            },
+            {
+              "choice": "net8.0",
+              "description": "Target net8.0",
+              "displayName": ".NET 8.0"            
             }
         ],
       "replaces": "FrameworkParameter",
-      "defaultValue": "net7.0",
+      "defaultValue": "net8.0",
       "displayName": "Framework"
     },
     "langVersion": {
@@ -114,11 +119,11 @@
     },
     "csharpFeature_ImplicitUsings" : {
       "type": "computed",
-      "value": "(Framework == \"net7.0\" || Framework == \"net6.0\") && csharp9orOlder == \"false\""
+      "value": "(Framework == \"net8.0\" || Framework == \"net7.0\" || Framework == \"net6.0\") && csharp9orOlder == \"false\""
     },
     "csharpFeature_FileScopedNamespaces" : {
       "type": "computed",
-      "value": "(Framework == \"net7.0\" || Framework == \"net6.0\") && csharp9orOlder == \"false\""
+      "value": "(Framework == \"net8.0\" || Framework == \"net7.0\" || Framework == \"net6.0\") && csharp9orOlder == \"false\""
     }
   },
   "primaryOutputs": [
@@ -147,10 +152,10 @@
     },
     {
       "exclude": [ "**/[Bb]in/**", "**/[Oo]bj/**", ".template.config/**/*", "**/*.filelist", "**/*.lock.json" ],
-      "condition": "(Framework == \"net7.0\" || Framework == \"net6.0\")",
+      "condition": "(Framework == \"net8.0\" || Framework == \"net7.0\" || Framework == \"net6.0\")",
       "source": "./net6.0",
       "target": "./"
-    }    
+    }  
   ],
   "defaultName": "WpfApp1",
   "postActions": [
